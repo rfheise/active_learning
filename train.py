@@ -27,14 +27,14 @@ def main():
     train(models, X_train, y_train, query_strat, 500, 5000, 500, (X_test, y_test))
 
 def test_all(ModelClass, data_func):
-    for i in range(51,52):
+    for i in range(53,55):
         initial_weights = ModelClass()
         tests = [
           generate_test("uncert-pool",[ModelClass.clone(initial_weights)],uncertainty_pool),
-        #   generate_test("uncert-stream",[ModelClass.clone(initial_weights)],uncertainty_stream),
-        #   generate_test("baseline-increment",[ModelClass.clone(initial_weights)],default_increment),
+          generate_test("uncert-stream",[ModelClass.clone(initial_weights)],uncertainty_stream),
+          generate_test("baseline-increment",[ModelClass.clone(initial_weights)],default_increment),
           generate_test("baseline-random",[ModelClass.clone(initial_weights)],default_random),
-        #   generate_test("query-by-committee",[ModelClass(), ModelClass(), ModelClass(), ModelClass(), ModelClass()],query_by_comittee),
+          generate_test("query-by-committee",[ModelClass(), ModelClass(), ModelClass(), ModelClass(), ModelClass()],query_by_comittee),
           
         ]
         X_train, y_train, X_test, y_test = data_func()
