@@ -1,6 +1,6 @@
 from torch import nn
 import torch 
-from Cifar import get_data, DataSetFromTensor
+from Cifar import get_data, DataSetFromTensor, get_data_cat_dog
 from torch.utils.data import TensorDataset, DataLoader
 from torchvision import models 
 from torchvision import datasets
@@ -38,22 +38,22 @@ class LeNet(nn.Module):
 def main():
 
     epochs = 500
-    model = LeNet().to(device)
-    # model = models.resnet18()
-    # model.fc = nn.Sequential(
-    #     nn.Linear(model.fc.in_features, 512),
-    #     nn.ReLU(),
-    #     nn.Linear(512, 256),
-    #     nn.ReLU(),
-    #     nn.Linear(256, 10), 
-    #     nn.Softmax(dim=1)
-    # )
+    # model = LeNet().to(device)
+    model = models.resnet18()
+    model.fc = nn.Sequential(
+        nn.Linear(model.fc.in_features, 512),
+        nn.ReLU(),
+        nn.Linear(512, 256),
+        nn.ReLU(),
+        nn.Linear(256, 10), 
+        nn.Softmax(dim=1)
+    )
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=.001)
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9, weight_decay=1e-4)
     loss = nn.CrossEntropyLoss()
 
-    X_train, y_train, X_test, y_test = get_data()
+    X_train, y_train, X_test, y_test = get_data_cat_dog()
 
     X_train = torch.tensor(X_train)
     X_test = torch.tensor(X_test)

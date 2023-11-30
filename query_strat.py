@@ -65,6 +65,8 @@ def uncertainty_stream(num_points, model, unlabeled_data, y, threshold=3):
         index_list = np.where(entropy > threshold)[0][:num_points]
         np.random.shuffle(index_list)
         threshold -= .01
+        if threshold < 0:
+            index_list = np.arange(len(entropy))[:num_points]
     
     # preds = np.max(preds, axis=1)
     # while len(index_list) < num_points:

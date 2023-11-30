@@ -1,6 +1,8 @@
 import numpy as np
 from LeNet import LeNet 
 import torch 
+from torchvision import models 
+from torch import nn
 from torchvision import transforms
 from torch.utils.data import TensorDataset, DataLoader
 from Cifar import DataSetFromTensor
@@ -29,6 +31,10 @@ class Model():
 
         # clear params
         pass
+    
+    @staticmethod
+    def clone():
+        pass
 
 class LeNetAL():
 
@@ -36,7 +42,7 @@ class LeNetAL():
     default_transform = transforms.Compose([
         transforms.Normalize((0.5,),(0.5,),),
     ])
-    epochs = 50
+    epochs = 100
 
     def __init__(self):
         self.model = LeNet().to(LeNetAL.device)
@@ -58,13 +64,14 @@ class LeNetAL():
         self.model.train()
         loader = self.to_data_loader(True, X,y)
         
-        rolling_acc = 0
-        rolling_loss = 0
-        count = 0
-        count_batches = 0
+        loss = 0
+        acc = 0
 
         for i in range(LeNetAL.epochs):
-            
+            rolling_acc = 0
+            rolling_loss = 0
+            count = 0
+            count_batches = 0
             for X,y in loader:
 
                 X = X.to(LeNetAL.device)
@@ -80,8 +87,8 @@ class LeNetAL():
                 count += X.shape[0]
                 rolling_loss += loss.item()
                 count_batches += 1
-                
-        return rolling_acc/count, rolling_loss/count_batches
+            loss, acc = rolling_acc/count, rolling_loss/count_batches
+        return loss, acc
 
     def pred_proba(self,X):
 
@@ -116,3 +123,34 @@ class LeNetAL():
     def clear(self):
         self.model.load_state_dict(self.initial_weights.state_dict())
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
+
+
+class ResNet18AL(LeNetAL):
+
+    def __init__(self):
+        self.model = self.get_model()
+        self.model = self.model.to(LeNetAL.device)
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
+        self.loss = torch.nn.CrossEntropyLoss()
+        self.initial_weights = self.get_model()
+        self.initial_weights.load_state_dict(self.model.state_dict())
+
+    @staticmethod
+    def get_model():
+        model = models.resnet18()
+        model.fc = nn.Sequential(
+            nn.Linear(model.fc.in_features, 512),
+            nn.ReLU(),
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Linear(256, 10), 
+            nn.Softmax(dim=1)
+        )
+        return model
+    
+    @staticmethod
+    def clone(other):
+      net = ResNet18AL()
+      net.model.load_state_dict(other.model.state_dict())
+      net.initial_weights.load_state_dict(other.model.state_dict())
+      return net

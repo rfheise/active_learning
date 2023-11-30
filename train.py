@@ -1,6 +1,6 @@
 import numpy as np
-from Cifar import get_data 
-from Model import LeNetAL
+from Cifar import get_data, get_data_cat_dog 
+from Model import LeNetAL, ResNet18AL
 from query_strat import uncertainty_pool, uncertainty_stream, query_by_comittee, default_random, default_increment
 import wandb
 
@@ -15,28 +15,29 @@ def generate_test(name, model, query_strat):
 
 def main():
     
-    # wandb.init(project="active learning")
+    wandb.init(project="active learning playground",name="gg2")
 
     X_train, y_train, X_test, y_test = get_data()
     models = [LeNetAL()]
     # models = [LeNetAL(), LeNetAL(), LeNetAL(), LeNetAL(), LeNetAL()]
-    # query_strat = uncertainty_pool 
+    query_strat = uncertainty_pool 
     # query_strat = default_increment
-    query_strat = uncertainty_stream
+    # query_strat = uncertainty_stream
     # query_strat = query_by_comittee
-    train(models, X_train, y_train, query_strat, 500, 9500, 500)
+    train(models, X_train, y_train, query_strat, 500, 5000, 500, (X_test, y_test))
 
-def test_all():
-    for i in range(1,5):
-        initial_weights = LeNetAL()
+def test_all(ModelClass, data_func):
+    for i in range(51,52):
+        initial_weights = ModelClass()
         tests = [
-          generate_test("uncert-pool",[LeNetAL.clone(initial_weights)],uncertainty_pool),
-          generate_test("uncert-stream",[LeNetAL.clone(initial_weights)],uncertainty_stream),
-          generate_test("query-by-committee",[LeNetAL(), LeNetAL(), LeNetAL(), LeNetAL(), LeNetAL()],query_by_comittee),
-          generate_test("baseline-increment",[LeNetAL.clone(initial_weights)],default_increment),
-          generate_test("baseline-random",[LeNetAL.clone(initial_weights)],default_random),
+          generate_test("uncert-pool",[ModelClass.clone(initial_weights)],uncertainty_pool),
+        #   generate_test("uncert-stream",[ModelClass.clone(initial_weights)],uncertainty_stream),
+        #   generate_test("baseline-increment",[ModelClass.clone(initial_weights)],default_increment),
+          generate_test("baseline-random",[ModelClass.clone(initial_weights)],default_random),
+        #   generate_test("query-by-committee",[ModelClass(), ModelClass(), ModelClass(), ModelClass(), ModelClass()],query_by_comittee),
+          
         ]
-        X_train, y_train, X_test, y_test = get_data()
+        X_train, y_train, X_test, y_test = data_func()
         for test in tests:
             print(f"\n\n Running: {test['name']}\n\n")
             wandb.init(project="active learning playground",name=f"{test['name']}-{i}",reinit=True,
@@ -44,8 +45,7 @@ def test_all():
                         "method":test["name"],
                         "dataset": i
                     })
-            train(test["model"],X_train, y_train, test["query_strat"],100, 5100, 100, (X_test, y_test))
-
+            train(test["model"],X_train, y_train, test["query_strat"],500, 5000, 200, (X_test, y_test))
 
 
 
@@ -92,7 +92,9 @@ def train(models, X,y, query_strat, initialize=100, budget=100, step_size=10, va
     return model
 
 if __name__ == "__main__":
-    test_all()
+    # test_all(ResNet18AL, get_data_cat_dog)
+    test_all(LeNetAL, get_data)
+    # main()
     
 
 
