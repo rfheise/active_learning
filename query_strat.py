@@ -32,7 +32,7 @@ def uncertainty_pool(num_points, model, unlabeled_data, y):
 
     preds = model.pred_proba(unlabeled_data)
 
-    unlabeled_candidates = np.argsort(get_entropy(preds))[:num_points]
+    unlabeled_candidates = np.argsort(-1 * get_entropy(preds))[:num_points]
 
     return ret_labels_from_indexes(unlabeled_data, y, unlabeled_candidates)
    
@@ -90,6 +90,6 @@ def query_by_comittee(num_points, models, unlabeled_data, y):
         preds.append(np.argmax(proba, axis=1))
     preds = np.array(preds)
     vote_entropy = np.apply_along_axis(vote_ent(len(models)),0,preds)
-    index_list = np.argsort(vote_entropy)[:num_points]
+    index_list = np.argsort(-1 * vote_entropy)[:num_points]
     return ret_labels_from_indexes(unlabeled_data, y, index_list)
 
