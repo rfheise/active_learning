@@ -36,7 +36,7 @@ class LeNetAL():
     default_transform = transforms.Compose([
         transforms.Normalize((0.5,),(0.5,),),
     ])
-    epochs = 30
+    epochs = 50
 
     def __init__(self):
         self.model = LeNet().to(LeNetAL.device)

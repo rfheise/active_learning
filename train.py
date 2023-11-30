@@ -79,6 +79,7 @@ def train(models, X,y, query_strat, initialize=100, budget=100, step_size=10, va
         print(f"\n\n-------------------\nLabeled Data Points {labeled_data[0].shape[0]}\n-------------------\n\n")
         print(f"train acc: {train_acc}  train loss: {train_loss}")
         print(f"val loss: {val_acc}  val loss: {val_loss}")
+        print(f"Unlabeled Data Points:{unlabeled_data.shape[0]}")
         
         if unlabeled_data.shape[0] == 0:
             break
