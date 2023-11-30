@@ -27,24 +27,24 @@ def main():
     train(models, X_train, y_train, query_strat, 500, 9500, 500)
 
 def test_all():
-    for i in range(5):
+    for i in range(1,5):
         initial_weights = LeNetAL()
         tests = [
-            generate_test("baseline-increment",[LeNetAL.clone(initial_weights)],default_increment),
-            generate_test("baseline-random",[LeNetAL.clone(initial_weights)],default_random),
-            generate_test("uncert-pool",[LeNetAL.clone(initial_weights)],uncertainty_pool),
-            generate_test("uncert-stream",[LeNetAL.clone(initial_weights)],uncertainty_stream),
-            generate_test("query-by-committee",[LeNetAL(), LeNetAL(), LeNetAL(), LeNetAL(), LeNetAL()],query_by_comittee),
+          generate_test("uncert-pool",[LeNetAL.clone(initial_weights)],uncertainty_pool),
+          generate_test("uncert-stream",[LeNetAL.clone(initial_weights)],uncertainty_stream),
+          generate_test("query-by-committee",[LeNetAL(), LeNetAL(), LeNetAL(), LeNetAL(), LeNetAL()],query_by_comittee),
+          generate_test("baseline-increment",[LeNetAL.clone(initial_weights)],default_increment),
+          generate_test("baseline-random",[LeNetAL.clone(initial_weights)],default_random),
         ]
         X_train, y_train, X_test, y_test = get_data()
         for test in tests:
             print(f"\n\n Running: {test['name']}\n\n")
-            wandb.init(project="active learning playground",name=f"{test['name']}-{i}",
+            wandb.init(project="active learning playground",name=f"{test['name']}-{i}",reinit=True,
                     config = {
                         "method":test["name"],
                         "dataset": i
                     })
-            train(test["model"],X_train, y_train, test["query_strat"],100, 10100, 100, (X_test, y_test))
+            train(test["model"],X_train, y_train, test["query_strat"],100, 5100, 100, (X_test, y_test))
 
 
 
@@ -62,7 +62,7 @@ def train(models, X,y, query_strat, initialize=100, budget=100, step_size=10, va
 
         train_acc, train_loss, val_acc, val_loss = (0,0,0,0)
         for model in models:
-            # model.clear()
+            model.clear()
             train_acc, train_loss = model.fit(labeled_data[0], labeled_data[1])
             
         if val is not None:

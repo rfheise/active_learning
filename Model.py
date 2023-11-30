@@ -36,12 +36,14 @@ class LeNetAL():
     default_transform = transforms.Compose([
         transforms.Normalize((0.5,),(0.5,),),
     ])
-    epochs = 15
+    epochs = 30
 
     def __init__(self):
         self.model = LeNet().to(LeNetAL.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
         self.loss = torch.nn.CrossEntropyLoss()
+        self.initial_weights = LeNet()
+        self.initial_weights.load_state_dict(self.model.state_dict())
     
     def to_data_loader(self, train, X,y, batch_size=1500):
         
@@ -98,6 +100,7 @@ class LeNetAL():
     def clone(other):
       net = LeNetAL()
       net.model.load_state_dict(other.model.state_dict())
+      net.initial_weights.load_state_dict(other.model.state_dict())
       return net
 
     def get_stat_val(self, X, y):
@@ -111,5 +114,5 @@ class LeNetAL():
 
 
     def clear(self):
-        self.model = LeNet().to(LeNetAL.device)
+        self.model.load_state_dict(self.initial_weights.state_dict())
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
