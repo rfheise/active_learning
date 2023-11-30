@@ -28,11 +28,12 @@ def main():
 
 def test_all():
     for i in range(5):
+        initial_weights = LeNetAL()
         tests = [
-            generate_test("baseline-increment",[LeNetAL()],default_increment),
-            generate_test("baseline-random",[LeNetAL()],default_random),
-            generate_test("uncert-pool",[LeNetAL()],uncertainty_pool),
-            generate_test("uncert-stream",[LeNetAL()],uncertainty_stream),
+            generate_test("baseline-increment",[LeNetAL.clone(initial_weights)],default_increment),
+            generate_test("baseline-random",[LeNetAL.clone(initial_weights)],default_random),
+            generate_test("uncert-pool",[LeNetAL.clone(initial_weights)],uncertainty_pool),
+            generate_test("uncert-stream",[LeNetAL.clone(initial_weights)],uncertainty_stream),
             generate_test("query-by-committee",[LeNetAL(), LeNetAL(), LeNetAL(), LeNetAL(), LeNetAL()],query_by_comittee),
         ]
         X_train, y_train, X_test, y_test = get_data()
@@ -63,7 +64,7 @@ def train(models, X,y, query_strat, initialize=100, budget=100, step_size=10, va
         for model in models:
             # model.clear()
             train_acc, train_loss = model.fit(labeled_data[0], labeled_data[1])
-
+            
         if val is not None:
             val_acc, val_loss = model.get_stat_val(val[0], val[1])
 

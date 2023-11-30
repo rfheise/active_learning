@@ -43,13 +43,13 @@ class LeNetAL():
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
         self.loss = torch.nn.CrossEntropyLoss()
     
-    def to_data_loader(self, train, X,y):
+    def to_data_loader(self, train, X,y, batch_size=1500):
         
         X = torch.tensor(X)
         if y is not None:
             y = torch.tensor(y)
 
-        return DataLoader(DataSetFromTensor(X,y, LeNetAL.default_transform), batch_size=1500, num_workers=12,shuffle=train)
+        return DataLoader(DataSetFromTensor(X,y, LeNetAL.default_transform), batch_size=batch_size, num_workers=4,shuffle=train)
 
     def fit(self,X,y):
 
@@ -62,12 +62,13 @@ class LeNetAL():
         count_batches = 0
 
         for i in range(LeNetAL.epochs):
-
+            
             for X,y in loader:
-                
+
                 X = X.to(LeNetAL.device)
                 y = y.to(LeNetAL.device)
                 self.optimizer.zero_grad()
+                
                 preds = self.model(X)
                 
                 loss = self.loss(preds, y)
@@ -77,14 +78,14 @@ class LeNetAL():
                 count += X.shape[0]
                 rolling_loss += loss.item()
                 count_batches += 1
-
+                
         return rolling_acc/count, rolling_loss/count_batches
 
     def pred_proba(self,X):
 
         self.model.eval()
 
-        loader = self.to_data_loader(False, X, None)
+        loader = self.to_data_loader(False, X, None, 60000)
         preds = []
     
         with torch.no_grad():
@@ -93,6 +94,12 @@ class LeNetAL():
                 preds.append(self.model(X))
         return torch.cat(preds,0).cpu().numpy()
     
+    @staticmethod
+    def clone(other):
+      net = LeNetAL()
+      net.model.load_state_dict(other.model.state_dict())
+      return net
+
     def get_stat_val(self, X, y):
         
         y = torch.tensor(y)
