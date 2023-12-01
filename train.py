@@ -27,7 +27,7 @@ def main():
     train(models, X_train, y_train, query_strat, 500, 5000, 500, (X_test, y_test))
 
 def test_all(ModelClass, data_func):
-    for i in range(53,55):
+    for i in range(81,82):
         initial_weights = ModelClass()
         tests = [
           generate_test("uncert-pool",[ModelClass.clone(initial_weights)],uncertainty_pool),
@@ -45,7 +45,7 @@ def test_all(ModelClass, data_func):
                         "method":test["name"],
                         "dataset": i
                     })
-            train(test["model"],X_train, y_train, test["query_strat"],500, 5000, 200, (X_test, y_test))
+            train(test["model"],X_train, y_train, test["query_strat"],1250, 4000, 200, (X_test, y_test))
 
 
 
@@ -62,7 +62,7 @@ def train(models, X,y, query_strat, initialize=100, budget=100, step_size=10, va
 
         train_acc, train_loss, val_acc, val_loss = (0,0,0,0)
         for model in models:
-            # model.clear()
+            #model.clear()
             train_acc, train_loss = model.fit(labeled_data[0], labeled_data[1])
             
         if val is not None:
