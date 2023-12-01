@@ -27,7 +27,7 @@ def main():
     train(models, X_train, y_train, query_strat, 500, 5000, 500, (X_test, y_test))
 
 def test_all(ModelClass, data_func):
-    for i in range(81,82):
+    for i in range(82,83):
         initial_weights = ModelClass()
         tests = [
           generate_test("uncert-pool",[ModelClass.clone(initial_weights)],uncertainty_pool),
