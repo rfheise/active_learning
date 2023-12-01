@@ -68,7 +68,8 @@ class LeNetAL():
 
         self.model.train()
         loader = self.to_data_loader(True, X,y)
-        
+        # self.scheduler = torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)
+        self.set_optim()
         loss = 0
         acc = 0
 
