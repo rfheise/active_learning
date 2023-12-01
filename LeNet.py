@@ -8,6 +8,20 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 
 device = "cuda"
+class BalancedLoss(nn.Module):
+
+    def __init__(self, num_classes, device):
+        super().__init__()
+        self.num_classes = num_classes 
+        self.device = device
+
+    def forward(self, preds, y):
+        preds = preds.to(self.device)
+        y = y.to(self.device)
+        weights = torch.unique(torch.cat((y,torch.arange(self.num_classes).to(self.device)),0), return_counts=True)[1].to(self.device)
+        weights = 1/weights
+        weights = weights/weights.sum()
+        return nn.functional.cross_entropy(preds, y, weight=weights)
 
 class LeNet(nn.Module):
 
@@ -38,22 +52,23 @@ class LeNet(nn.Module):
 def main():
 
     epochs = 500
-    # model = LeNet().to(device)
-    model = models.resnet18()
-    model.fc = nn.Sequential(
-        nn.Linear(model.fc.in_features, 512),
-        nn.ReLU(),
-        nn.Linear(512, 256),
-        nn.ReLU(),
-        nn.Linear(256, 10), 
-        nn.Softmax(dim=1)
-    )
+    model = LeNet().to(device)
+    # model = models.resnet18()
+    # model.fc = nn.Sequential(
+    #     nn.Linear(model.fc.in_features, 512),
+    #     nn.ReLU(),
+    #     nn.Linear(512, 256),
+    #     nn.ReLU(),
+    #     nn.Linear(256, 10), 
+    #     nn.Softmax(dim=1)
+    # )
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=.001)
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9, weight_decay=1e-4)
-    loss = nn.CrossEntropyLoss()
+    # loss = nn.CrossEntropyLoss()
+    loss = BalancedLoss(10, device)
 
-    X_train, y_train, X_test, y_test = get_data_cat_dog()
+    X_train, y_train, X_test, y_test = get_data()
 
     X_train = torch.tensor(X_train)
     X_test = torch.tensor(X_test)

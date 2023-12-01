@@ -1,5 +1,5 @@
 import numpy as np
-from LeNet import LeNet 
+from LeNet import LeNet, BalancedLoss
 import torch 
 from torchvision import models 
 from torch import nn
@@ -42,12 +42,13 @@ class LeNetAL():
     default_transform = transforms.Compose([
         transforms.Normalize((0.5,),(0.5,),),
     ])
-    epochs = 15
+    epochs = 256
 
     def __init__(self):
         self.model = LeNet().to(LeNetAL.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
-        self.loss = torch.nn.CrossEntropyLoss()
+        # self.loss = torch.nn.CrossEntropyLoss()
+        self.loss = BalancedLoss(10,LeNetAL.device)
         self.initial_weights = LeNet()
         self.initial_weights.load_state_dict(self.model.state_dict())
     
