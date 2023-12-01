@@ -42,17 +42,21 @@ class LeNetAL():
     default_transform = transforms.Compose([
         transforms.Normalize((0.5,),(0.5,),),
     ])
-    epochs = 256
+    epochs = 150
 
     def __init__(self):
         self.model = LeNet().to(LeNetAL.device)
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
+        
         # self.loss = torch.nn.CrossEntropyLoss()
         self.loss = BalancedLoss(10,LeNetAL.device)
         self.initial_weights = LeNet()
         self.initial_weights.load_state_dict(self.model.state_dict())
     
-    def to_data_loader(self, train, X,y, batch_size=10000):
+    def set_optim(self):
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
+        self.scheduler = torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)
+        
+    def to_data_loader(self, train, X,y, batch_size=50):
         
         X = torch.tensor(X)
         if y is not None:
@@ -89,6 +93,8 @@ class LeNetAL():
                 rolling_loss += loss.item()
                 count_batches += 1
             loss, acc = rolling_acc/count, rolling_loss/count_batches
+            self.scheduler.step()
+
         return loss, acc
 
     def pred_proba(self,X):
@@ -109,6 +115,7 @@ class LeNetAL():
       net = LeNetAL()
       net.model.load_state_dict(other.model.state_dict())
       net.initial_weights.load_state_dict(net.model.state_dict())
+      net.set_optim()
       return net
 
     def get_stat_val(self, X, y):
@@ -124,7 +131,7 @@ class LeNetAL():
     def clear(self):
         self.model.load_state_dict(self.initial_weights.state_dict())
         self.model = LeNet().to(LeNetAL.device)
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
+        self.set_optim()
 
 
 class ResNet18AL(LeNetAL):

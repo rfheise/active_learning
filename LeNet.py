@@ -64,6 +64,7 @@ def main():
     # )
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=.001)
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[30,60,120], gamma=0.1)
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9, weight_decay=1e-4)
     # loss = nn.CrossEntropyLoss()
     loss = BalancedLoss(10, device)
@@ -78,7 +79,7 @@ def main():
     for i in range(epochs):
         print(f"\n\n\n-------------\nEpoch {i + 1}\n-------------\n\n\n")
         print("train accuracy: ",end="")
-        print(train(model, X_train, y_train, optimizer, loss))
+        print(train(model, X_train, y_train, optimizer, loss, scheduler))
         print("test accuracy: ",end="")
         print(test(model, X_test, y_test))
 
@@ -104,12 +105,12 @@ default_transform = transforms.Compose([
         transforms.Normalize((0.5,),(0.5,),),
     ])
 
-def train(model, X,y, optimizer, criterion):
+def train(model, X,y, optimizer, criterion, scheduler):
 
     model.train()
     rolling_acc = 0
     count = 0
-    loader = DataLoader(DataSetFromTensor(X,y, default_transform), batch_size=1000, num_workers=12,shuffle=True)
+    loader = DataLoader(DataSetFromTensor(X[:3002],y[:3002], default_transform), batch_size=50, num_workers=12,shuffle=True)
     for X,y in loader:
         X = X.to(device)
         y = y.to(device)
@@ -120,6 +121,7 @@ def train(model, X,y, optimizer, criterion):
         optimizer.step() 
         rolling_acc += (preds.argmax(dim=1) == y).sum().item()
         count += X.shape[0]
+    scheduler.step()
     return rolling_acc/count
     
 def test(model, X,y):
