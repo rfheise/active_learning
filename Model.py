@@ -52,7 +52,7 @@ class LeNetAL():
         self.initial_weights = LeNet()
         self.initial_weights.load_state_dict(self.model.state_dict())
     
-    def to_data_loader(self, train, X,y, batch_size=1500):
+    def to_data_loader(self, train, X,y, batch_size=10000):
         
         X = torch.tensor(X)
         if y is not None:
