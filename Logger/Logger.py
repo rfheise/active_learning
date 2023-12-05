@@ -21,7 +21,7 @@ class Logger():
     def initialize_logger(test_name, test_id):
         Logger.test_id = test_id 
         Logger.test_name = test_name
-
+        Logger.logs = []
         if Logger.wandb:
             Logger.logs.append(WBLog(test_name, test_id))
         if Logger.text:

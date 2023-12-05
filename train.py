@@ -51,7 +51,7 @@ def train_query_samp(models, X,y, query_strat, initialize=100, budget=100, step_
 
         train_acc, train_loss, val_acc, val_loss = (0,0,0,0)
         for model in models:
-            # model.clear()
+            model.clear()
             train_acc, train_loss = model.fit(labeled_data[0], labeled_data[1])
             
         if val is not None:
