@@ -12,7 +12,7 @@ def main():
     # to run your test change the args of the function below
     # test_all_strats(LeNetAL, get_mnist_data, test_id=8002,num_init=100, budget=1100, k=100)
     # for i in range(4):
-    test_all_strats(LogisticAL, get_mnist_flat_data, test_id=6050, num_init=100,budget=5000, k=100 )
+    test_all_strats(LogisticAL, get_mnist_flat_data, test_id=1, num_init=100,budget=5000, k=100 )
 
 if __name__ == "__main__":
     main()
