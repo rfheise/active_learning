@@ -28,8 +28,8 @@ class XGBoost(Model):
         returns: model accuracy, loss on training data
         """
         self.model.fit(X,y)
-        preds = self.model.predict(X)
-        acc = (preds == y).sum()/y.shape[0]
+        preds = self.model.predict_proba(X)
+        acc = (preds.argmax(axis=1) == y).astype(np.float64).sum()/y.shape[0]
         loss = self.loss(y, preds)
         return acc, loss
     

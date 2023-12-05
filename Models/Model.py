@@ -31,7 +31,7 @@ class Model():
     def pred(self,X):
 
         # make predictions on X
-        return np.argmax(self.pred_proba(self, X))
+        return np.argmax(self.pred_proba(X),axis=1)
     
     def pred_proba(self, X):
 
@@ -83,7 +83,7 @@ class Model():
         may need to be inherited by child
         """
         proba = self.pred_proba(X)
-        loss = self.loss(y, proba)
+        loss = self.loss(y, proba, labels=np.arange(10))
         acc = (proba.argmax(axis=1) == y).mean()
         return acc, loss
 
