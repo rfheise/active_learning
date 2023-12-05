@@ -23,7 +23,7 @@ class LeNetAL(Model):
         self.initial_weights = LeNet()
         self.initial_weights.load_state_dict(self.model.state_dict())
         self.train_batch_size = 100
-        self.num_models = 5
+        self.num_models = 20
     
     def set_optim(self):
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 

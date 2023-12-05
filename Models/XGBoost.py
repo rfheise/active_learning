@@ -5,17 +5,20 @@ from torch import nn
 from torchvision import transforms
 from torch.utils.data import TensorDataset, DataLoader
 from ..Logger import Logger
+from xgboost import XGBClassifier
+from sklearn.metrics import log_loss
+from .Model import Model
 
-
-class Model():
+class XGBoost(Model):
 
     def __init__(self):
         """
             initialize your model
             click on LeNet.py to view an example
         """
-        self.hyper_params = {}
-
+        super().__init__()
+        self.model = XGBClassifier()
+        self.loss = log_loss
     def fit(self,X,y):
 
         """trains model with training data 
@@ -24,14 +27,11 @@ class Model():
 
         returns: model accuracy, loss on training data
         """
-        acc = 0 
-        loss = 0
+        self.model.fit(X,y)
+        preds = self.model.predict(X)
+        acc = (preds == y).sum()/y.shape[0]
+        loss = self.loss(y, preds)
         return acc, loss
-
-    def pred(self,X):
-
-        # make predictions on X
-        return np.argmax(self.pred_proba(self, X))
     
     def pred_proba(self, X):
 
@@ -42,7 +42,7 @@ class Model():
             c - number of classes
         """
         # make probability predictions for X 
-        return None
+        return self.model.predict_proba(X)
     
     def clear(self):
 
@@ -50,7 +50,7 @@ class Model():
         resets model for another round of training
         just reset the models params
         """
-        pass
+        self.model = XGBClassifier()
     
     @staticmethod
     def clone(other):
@@ -58,7 +58,8 @@ class Model():
         creates clone of other with same params
         returns another cloned model
         """
-        return Model()
+
+        return XGBoost()
 
     def set_hyper_params(self):
         #optional method to update hyper_params dict 
@@ -68,22 +69,10 @@ class Model():
         optional method used to update hyper_params dict for logging
         used to log modified hyper-parameters for each test
         """
-        self.hyper_params = {}
+        self.hyper_params = {
+            "model": "XGBoost",
+            "loss":"CE",
+            "clear": "new model"
+        }
 
-    def log_hyper_parameters(self):
-        
-        #call logger with hyperparameters
-        self.set_hyper_params()
-        Logger.log_hyper_parameters(**self.hyper_params)
-    
-    def get_stat_val(self, X, y):
-        
-        """
-        returns accuracy and loss of dataset 
-        may need to be inherited by child
-        """
-        proba = self.pred_proba(X)
-        loss = self.loss(y, proba)
-        acc = (proba.argmax(axis=1) == y).mean()
-        return acc, loss
 

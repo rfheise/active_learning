@@ -1,5 +1,5 @@
-from .Models import LeNetAL 
-from .Datasets import get_mnist_data
+from .Models import LeNetAL, XGBoost
+from .Datasets import get_mnist_data,get_titanic_data
 from .train import test_all_strats
 
 def main():
@@ -10,8 +10,8 @@ def main():
     # uses a budget of 10000
     # uses a step size of 500
     # to run your test change the args of the function below
-    test_all_strats(LeNetAL, get_mnist_data, test_id=7001,num_init=500, budget=5000, k=500)
-
+    # test_all_strats(LeNetAL, get_mnist_data, test_id=8002,num_init=100, budget=1100, k=100)
+    test_all_strats(XGBoost, get_titanic_data, test_id=5001, num_init=5,budget=510, k=5 )
 
 if __name__ == "__main__":
     main()

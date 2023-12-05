@@ -2,3 +2,6 @@ torch
 torchvision
 numpy
 wandb
+scikit-learn 
+xgboost
+pandas
