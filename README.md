@@ -10,7 +10,8 @@
   * main.py
     * main file where you will run your tests
 
-  To create your own model create a new file in the Models folder please see LeNet.py for an example. To create your own dataset implement a generic data function please see MNIST.py for an example. Whenever adding a file remeber to update the README and __init__.py file in each folder when applicable.
+  To create your own model create a new file in the Models folder please see LeNet.py for an example. To create your own dataset implement a generic data function please see MNIST.py for an example. Whenever adding a file remeber to update the README and __init__.py file in each folder when applicable. I implemented it as a python module so you have to import and run everything as a part of the python module i.e.
+  `python3 -m <dir>.main`
 
 
 # File Break Down
