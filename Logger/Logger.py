@@ -9,9 +9,12 @@ class Logger():
     test_name = None
     logs = []
 
-    
+    # runs wandb logging
     wandb = True
+    # runs text based logging into csv 
+    # puts in logs folder
     text = True
+    # prints logs to terminal
     terminal = True
 
     @staticmethod 

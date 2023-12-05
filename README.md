@@ -9,8 +9,43 @@
       * Example of generic dataset function
   * main.py
     * main file where you will run your tests
+
+  To create your own model create a new file in the Models folder please see LeNet.py for an example. To create your own dataset implement a generic data function please see MNIST.py for an example. Whenever adding a file remeber to update the README and __init__.py file in each folder when applicable.
+
+
 # File Break Down
+  * requirements.txt 
+    * python dependencies
   * main.py
     * main file where you run your tests
   * playground_ryan.py
-  
+    * file where I was just messing with things feel free to make your own 
+  * query_strat.py 
+    * file where I implemented all of the query strategies 
+  * train.py
+    * file where all of the training logic is implemented 
+  * Logger
+    * Log.py 
+      * generic logging class to create a logging system 
+    * WBLog.py
+      * wandb logger 
+    * TerminalLog.py
+      * terminal logger 
+    * TextLog.py
+      * text logger 
+    * Logger.py 
+      * calls all set loggers when training 
+  * Datasets
+    * Data.py 
+      * helper functions and generic data function example
+    * Cifar.py
+      * cifar dataset 
+    * MNIST.py 
+      * MNIST dataset 
+  * Models
+    * LeNet.py
+      * LeNet model implementation
+    * ResNet.py
+      * ResNet model implementation
+    * Model.py
+      * generic Model class used to implement a model

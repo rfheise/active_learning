@@ -7,48 +7,6 @@ from torch.utils.data import TensorDataset, DataLoader
 from .Model import Model
 from ..Datasets import DataSetFromTensor
 
-class BalancedLoss(nn.Module):
-
-    def __init__(self, num_classes, device):
-        super().__init__()
-        self.num_classes = num_classes 
-        self.device = device
-
-    def forward(self, preds, y):
-        preds = preds.to(self.device)
-        y = y.to(self.device)
-        weights = torch.unique(torch.cat((y,torch.arange(self.num_classes).to(self.device)),0), return_counts=True)[1].to(self.device)
-        weights = 1/weights
-        weights = weights/weights.sum()
-        return nn.functional.cross_entropy(preds, y, weight=weights)
-
-class LeNet(nn.Module):
-
-    def __init__(self):
-        super().__init__()
-        self.layers = nn.Sequential(
-            nn.Conv2d(in_channels=1, out_channels=6, kernel_size=(5,5),stride=(1,1)),
-            nn.MaxPool2d(kernel_size=(5,5),stride=(1,1)),
-            nn.Conv2d(in_channels=6, out_channels=16, kernel_size=(5,5),stride=(1,1)),
-            nn.MaxPool2d(kernel_size=(5,5),stride=(1,1)),
-            nn.Conv2d(in_channels=16, out_channels=20, kernel_size=(4,4),stride=(1,1)),
-            nn.MaxPool2d(kernel_size=(3,3),stride=(1,1)),
-            nn.Conv2d(in_channels=20, out_channels=32, kernel_size=(4,4),stride=(1,1)),
-            nn.MaxPool2d(kernel_size=(2,2),stride=(1,1)),
-            nn.Flatten(),
-            nn.Linear(288, 256), 
-            nn.ReLU(), 
-            nn.Linear(256,64),
-            nn.ReLU(), 
-            nn.Linear(64, 10),
-            nn.Softmax(dim=1)
-        )
-
-    def forward(self, X):
-
-        return self.layers(X)
-
-
 class LeNetAL(Model):
 
     device = "cuda"
@@ -161,3 +119,43 @@ class LeNetAL(Model):
         }
 
         
+class BalancedLoss(nn.Module):
+
+    def __init__(self, num_classes, device):
+        super().__init__()
+        self.num_classes = num_classes 
+        self.device = device
+
+    def forward(self, preds, y):
+        preds = preds.to(self.device)
+        y = y.to(self.device)
+        weights = torch.unique(torch.cat((y,torch.arange(self.num_classes).to(self.device)),0), return_counts=True)[1].to(self.device)
+        weights = 1/weights
+        weights = weights/weights.sum()
+        return nn.functional.cross_entropy(preds, y, weight=weights)
+
+class LeNet(nn.Module):
+
+    def __init__(self):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Conv2d(in_channels=1, out_channels=6, kernel_size=(5,5),stride=(1,1)),
+            nn.MaxPool2d(kernel_size=(5,5),stride=(1,1)),
+            nn.Conv2d(in_channels=6, out_channels=16, kernel_size=(5,5),stride=(1,1)),
+            nn.MaxPool2d(kernel_size=(5,5),stride=(1,1)),
+            nn.Conv2d(in_channels=16, out_channels=20, kernel_size=(4,4),stride=(1,1)),
+            nn.MaxPool2d(kernel_size=(3,3),stride=(1,1)),
+            nn.Conv2d(in_channels=20, out_channels=32, kernel_size=(4,4),stride=(1,1)),
+            nn.MaxPool2d(kernel_size=(2,2),stride=(1,1)),
+            nn.Flatten(),
+            nn.Linear(288, 256), 
+            nn.ReLU(), 
+            nn.Linear(256,64),
+            nn.ReLU(), 
+            nn.Linear(64, 10),
+            nn.Softmax(dim=1)
+        )
+
+    def forward(self, X):
+
+        return self.layers(X)
