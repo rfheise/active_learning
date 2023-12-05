@@ -13,7 +13,7 @@ class LeNetAL(Model):
     default_transform = transforms.Compose([
         transforms.Normalize((0.5,),(0.5,),),
     ])
-    epochs = 200
+    epochs = 100
 
     def __init__(self):
         super().__init__()
@@ -23,6 +23,7 @@ class LeNetAL(Model):
         self.initial_weights = LeNet()
         self.initial_weights.load_state_dict(self.model.state_dict())
         self.train_batch_size = 100
+        self.num_models = 5
     
     def set_optim(self):
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
@@ -39,36 +40,46 @@ class LeNetAL(Model):
 
     def fit(self,X,y):
 
-        self.model.train()
+        models = []
         loader = self.to_data_loader(True, X,y, self.train_batch_size)
-        self.set_optim()
-        loss = 0
-        acc = 0
+        for j in range(self.num_models):
+            self.model.train()
+            self.set_optim()
+            loss = 0
+            acc = 0
 
-        for i in range(LeNetAL.epochs):
-            rolling_acc = 0
-            rolling_loss = 0
-            count = 0
-            count_batches = 0
-            for X,y in loader:
+            for i in range(LeNetAL.epochs):
+                rolling_acc = 0
+                rolling_loss = 0
+                count = 0
+                count_batches = 0
+                for X,y in loader:
 
-                X = X.to(LeNetAL.device)
-                y = y.to(LeNetAL.device)
-                self.optimizer.zero_grad()
-                
-                preds = self.model(X)
-                
-                loss = self.loss(preds, y)
-                loss.backward()
-                self.optimizer.step() 
-                rolling_acc += (preds.argmax(dim=1) == y).sum().item()
-                count += X.shape[0]
-                rolling_loss += loss.item()
-                count_batches += 1
-            loss, acc = rolling_acc/count, rolling_loss/count_batches
-            self.scheduler.step()
-
-        return loss, acc
+                    X = X.to(LeNetAL.device)
+                    y = y.to(LeNetAL.device)
+                    self.optimizer.zero_grad()
+                    
+                    preds = self.model(X)
+                    
+                    loss = self.loss(preds, y)
+                    loss.backward()
+                    self.optimizer.step() 
+                    rolling_acc += (preds.argmax(dim=1) == y).sum().item()
+                    count += X.shape[0]
+                    rolling_loss += loss.item()
+                    count_batches += 1
+                acc, loss = rolling_acc/count, rolling_loss/count_batches
+                self.scheduler.step()
+            models.append((self.model, acc, loss))
+            self.clear() 
+        min_index = 0
+        for j in range(self.num_models):
+            print(models[j][1], models[j][2])
+            if models[min_index][2] > models[j][2]:
+                min_index = j
+        self.model = models[min_index][0]
+        # acc, loss
+        return models[min_index][1], models[min_index][2]
 
     def pred_proba(self,X):
 
@@ -115,7 +126,8 @@ class LeNetAL(Model):
             "loss":"CE",
             "scheduler": "torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)",
             "optim":"default adam",
-            "clear": "new model"
+            "clear": "new model",
+            "num_fitting":self.num_models
         }
 
         

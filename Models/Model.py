@@ -21,8 +21,12 @@ class Model():
         """trains model with training data 
         X: training data
         y: targets
+
+        returns: model accuracy, loss on training data
         """
-        pass
+        acc = 0 
+        loss = 0
+        return acc, loss
 
     def pred(self,X):
 
