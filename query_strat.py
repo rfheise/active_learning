@@ -67,11 +67,6 @@ def uncertainty_stream(num_points, model, unlabeled_data, y, threshold=3):
         threshold -= .01
         if threshold < 0:
             index_list = np.arange(len(entropy))[:num_points]
-    
-    # preds = np.max(preds, axis=1)
-    # while len(index_list) < num_points:
-    #     index_list = np.where(preds < threshold)[0][:num_points]
-    #     threshold += .01
 
     # returns new labeled data & unlabeled sets from the list
     return ret_labels_from_indexes(unlabeled_data, y, index_list)

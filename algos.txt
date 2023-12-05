@@ -1,0 +1,54 @@
+
+
+Let U be the Unlabelled data pool or stream
+Randomly select k examples from U
+    and query the oracle to initialize training set T 
+increment cost by k
+
+while cost < budget or U is empty do 
+    train the model(s) using T
+    select k examples from Unlabelled set based upon querying strategy 
+    move these k examples into T
+    remove these k examples from U
+    increment cost by k
+
+
+Let U be the Unlabelled data Pool
+Randomly select k examples from U
+and query the oracle to initialize training set T 
+Add k to cost
+
+while cost < budget or U is empty do 
+    train the model using T
+    for e in P compute uncertainty for e 
+    select k examples from P with largest uncertainty
+    move these k examples into T
+    remove these k examples from U
+    increment cost by k
+
+Let U be the Unlabelled data Pool
+Randomly select k examples from U
+and query the oracle to initialize training set T 
+Add k to cost
+initialize a committee C of different models
+
+while cost < budget or U is empty do 
+    train each model using T
+    for e in P use C to compute ranking
+    select k examples from P with highest ranking
+    move these k examples into T
+    remove these k examples from U
+    increment cost by k
+
+Let U be the Unlabelled data stream 
+observe the first k points from S 
+and query the oracle to initialize training set T 
+Add k to cost 
+
+while cost < budget or U is empty do 
+
+    train the model using T 
+    while no points queried
+        observe the next k points from S 
+        for each observed point decide whether to query or discard 
+            if queried add to T and add one to cost

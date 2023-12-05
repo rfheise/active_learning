@@ -1,62 +1,77 @@
 import numpy as np
-from LeNet import LeNet, BalancedLoss
 import torch 
 from torchvision import models 
 from torch import nn
 from torchvision import transforms
 from torch.utils.data import TensorDataset, DataLoader
-from Cifar import DataSetFromTensor
+from .Model import Model
+from ..Datasets import DataSetFromTensor
 
-class Model():
+class BalancedLoss(nn.Module):
+
+    def __init__(self, num_classes, device):
+        super().__init__()
+        self.num_classes = num_classes 
+        self.device = device
+
+    def forward(self, preds, y):
+        preds = preds.to(self.device)
+        y = y.to(self.device)
+        weights = torch.unique(torch.cat((y,torch.arange(self.num_classes).to(self.device)),0), return_counts=True)[1].to(self.device)
+        weights = 1/weights
+        weights = weights/weights.sum()
+        return nn.functional.cross_entropy(preds, y, weight=weights)
+
+class LeNet(nn.Module):
 
     def __init__(self):
-        pass
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Conv2d(in_channels=1, out_channels=6, kernel_size=(5,5),stride=(1,1)),
+            nn.MaxPool2d(kernel_size=(5,5),stride=(1,1)),
+            nn.Conv2d(in_channels=6, out_channels=16, kernel_size=(5,5),stride=(1,1)),
+            nn.MaxPool2d(kernel_size=(5,5),stride=(1,1)),
+            nn.Conv2d(in_channels=16, out_channels=20, kernel_size=(4,4),stride=(1,1)),
+            nn.MaxPool2d(kernel_size=(3,3),stride=(1,1)),
+            nn.Conv2d(in_channels=20, out_channels=32, kernel_size=(4,4),stride=(1,1)),
+            nn.MaxPool2d(kernel_size=(2,2),stride=(1,1)),
+            nn.Flatten(),
+            nn.Linear(288, 256), 
+            nn.ReLU(), 
+            nn.Linear(256,64),
+            nn.ReLU(), 
+            nn.Linear(64, 10),
+            nn.Softmax(dim=1)
+        )
 
-    def fit(self,X,y):
+    def forward(self, X):
 
-        # train model
-        pass
+        return self.layers(X)
 
-    def pred(self,X):
 
-        # make predictions on X
-        return np.argmax(self.pred_proba(self, X))
-    
-    def pred_proba(self, X):
-
-        # make probability predictions for X 
-        return None
-    
-    def clear(self):
-
-        # clear params
-        pass
-    
-    @staticmethod
-    def clone():
-        pass
-
-class LeNetAL():
+class LeNetAL(Model):
 
     device = "cuda"
     default_transform = transforms.Compose([
         transforms.Normalize((0.5,),(0.5,),),
     ])
-    epochs = 150
+    epochs = 200
 
     def __init__(self):
+        super().__init__()
         self.model = LeNet().to(LeNetAL.device)
-        
-        # self.loss = torch.nn.CrossEntropyLoss()
-        self.loss = BalancedLoss(10,LeNetAL.device)
+        self.loss = torch.nn.CrossEntropyLoss()
+        # self.loss = BalancedLoss(10,LeNetAL.device)
         self.initial_weights = LeNet()
         self.initial_weights.load_state_dict(self.model.state_dict())
+        self.train_batch_size = 100
     
     def set_optim(self):
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
         self.scheduler = torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)
-        
-    def to_data_loader(self, train, X,y, batch_size=50):
+        # self.scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(self.optimizer, LeNetAL.epochs - 1)
+    
+    def to_data_loader(self, train, X,y, batch_size=100):
         
         X = torch.tensor(X)
         if y is not None:
@@ -67,8 +82,7 @@ class LeNetAL():
     def fit(self,X,y):
 
         self.model.train()
-        loader = self.to_data_loader(True, X,y)
-        # self.scheduler = torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)
+        loader = self.to_data_loader(True, X,y, self.train_batch_size)
         self.set_optim()
         loss = 0
         acc = 0
@@ -130,37 +144,19 @@ class LeNetAL():
 
 
     def clear(self):
-        self.model.load_state_dict(self.initial_weights.state_dict())
+        # self.model.load_state_dict(self.initial_weights.state_dict())
         self.model = LeNet().to(LeNetAL.device)
         self.set_optim()
 
+    def set_hyper_params(self):
 
-class ResNet18AL(LeNetAL):
+        self.hyper_parmas = {
+            "epochs":LeNet.epochs, 
+            "train_batch_size":self.train_batch_size, 
+            "loss":"CE",
+            "scheduler": "torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)",
+            "optim":"default adam",
+            "clear": "new model"
+        }
 
-    def __init__(self):
-        self.model = self.get_model()
-        self.model = self.model.to(LeNetAL.device)
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
-        self.loss = torch.nn.CrossEntropyLoss()
-        self.initial_weights = self.get_model()
-        self.initial_weights.load_state_dict(self.model.state_dict())
-
-    @staticmethod
-    def get_model():
-        model = models.resnet18()
-        model.fc = nn.Sequential(
-            nn.Linear(model.fc.in_features, 512),
-            nn.ReLU(),
-            nn.Linear(512, 256),
-            nn.ReLU(),
-            nn.Linear(256, 10), 
-            nn.Softmax(dim=1)
-        )
-        return model
-    
-    @staticmethod
-    def clone(other):
-      net = ResNet18AL()
-      net.model.load_state_dict(other.model.state_dict())
-      net.initial_weights.load_state_dict(other.model.state_dict())
-      return net
+        
