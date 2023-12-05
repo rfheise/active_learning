@@ -1,12 +1,12 @@
 import wandb
+from .Log import Log
 
-
-class WBLog():
+class WBLog(Log):
 
     def __init__(self, test_name, test_id):
-        super().__init__(test_id)
+        super().__init__(test_name, test_id)
         self.table = None
-        wandb.init(project="active learning playground",name=f"{test_name}-{test_id}",reinit=True,
+        wandb.init(project="active learning playground 2",name=f"{test_name}-{test_id}",reinit=True,
         config = {
             "dataset": test_id, 
             "method": test_name
@@ -16,14 +16,22 @@ class WBLog():
     def log_hyper_parameters(self, **kwargs):
         
         if self.table is None:
-            self.wandb_table = wandb.Table(columns=["hyper param","value"])
+            self.table = wandb.Table(columns=["hyper param","value"])
         
         for kwarg in kwargs:
-            self.wandb_table.add_data(kwarg, kwargs[kwarg])
+            self.table.add_data(str(kwarg), str(kwargs[kwarg]))
 
     def log_training_data(self, **kwargs):
         self.flush_table()
-        wandb.log(kwargs)
+    
+        data = {}
+        step_size = None
+        for kwarg in kwargs:
+            if kwarg == "labeled_data_points":
+                step_size = kwargs[kwarg]
+            else:
+                data[kwarg] = kwargs[kwarg]
+        wandb.log(data, step=step_size)
 
     def flush_table(self):
         

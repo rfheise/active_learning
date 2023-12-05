@@ -150,8 +150,9 @@ class LeNetAL(Model):
 
     def set_hyper_params(self):
 
-        self.hyper_parmas = {
-            "epochs":LeNet.epochs, 
+        self.hyper_params = {
+            "model": "LeNet",
+            "epochs":LeNetAL.epochs, 
             "train_batch_size":self.train_batch_size, 
             "loss":"CE",
             "scheduler": "torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)",

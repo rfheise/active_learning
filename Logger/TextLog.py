@@ -1,17 +1,20 @@
 import os
 import csv
+from .Log import Log
 
-class TextLog():
+class TextLog(Log):
 
     def __init__(self, test_name, test_id, root="logs"):
+        super().__init__(test_name, test_id)
         self.test_name = test_name
         self.test_id = test_id
-        self.root = os.path.join(root, f"test{test_id}",test_name)
+        dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        self.root = os.path.join(dir_path, root, f"test{test_id}",test_name)
         self.f = None
         if not os.path.exists(self.root):
             os.makedirs(self.root)
 
-    def log_hyper_params(self, **kwargs):
+    def log_hyper_parameters(self, **kwargs):
         
         fname = os.path.join(self.root, "hyper_params.txt")
         with open(fname, "a") as f:

@@ -40,6 +40,12 @@ def train_query_samp(models, X,y, query_strat, initialize=100, budget=100, step_
     labeled_data = [X[:initialize], y[:initialize]]
     unlabeled_data = X[initialize:]
     y = y[initialize:]
+    
+    #log hyper params
+    for model in models:
+        model.log_hyper_parameters()
+
+    Logger.log_hyper_parameters(budget=budget, k=step_size, init_pts=initialize)
 
     for i in range(0,budget,step_size):
 
@@ -51,7 +57,7 @@ def train_query_samp(models, X,y, query_strat, initialize=100, budget=100, step_
         if val is not None:
             val_acc, val_loss = model.get_stat_val(val[0], val[1])
 
-        Logger.log(
+        Logger.log_training_data(
             **{"train/acc":train_acc,
             "train/loss":train_loss, 
             "val/loss":val_loss,
@@ -59,11 +65,6 @@ def train_query_samp(models, X,y, query_strat, initialize=100, budget=100, step_
             "labeled_data_points":labeled_data[0].shape[0]
             }
         )
-
-        print(f"\n\n-------------------\nLabeled Data Points {labeled_data[0].shape[0]}\n-------------------\n\n")
-        print(f"train acc: {train_acc}  train loss: {train_loss}")
-        print(f"val loss: {val_acc}  val loss: {val_loss}")
-        print(f"Unlabeled Data Points:{unlabeled_data.shape[0]}")
         
         if unlabeled_data.shape[0] == 0:
             break
@@ -74,8 +75,5 @@ def train_query_samp(models, X,y, query_strat, initialize=100, budget=100, step_
 
 
     return model
-
-if __name__ == "__main__":
-    test_all_strats(LeNetAL, get_mnist_data)
 
 

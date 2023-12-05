@@ -8,7 +8,7 @@ class Log():
         self.test_name = test_name
         self.test_id = test_id
 
-    def log_hyper_params(self, **kwargs):
+    def log_hyper_parameters(self, **kwargs):
         pass 
 
     def log_training_data(self,**kwargs):

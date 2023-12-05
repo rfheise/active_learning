@@ -10,7 +10,7 @@ from ..Logger import Logger
 class Model():
 
     def __init__(self):
-        self.hyper_parmas = {}
+        self.hyper_params = {}
 
     def fit(self,X,y):
 
@@ -41,10 +41,10 @@ class Model():
         #used for logging 
         pass
 
-    def log_hyper_params(self):
+    def log_hyper_parameters(self):
         
         #call logger with hyperparameters
-        self.set_hyper_params
+        self.set_hyper_params()
         Logger.log_hyper_parameters(**self.hyper_params)
     
 

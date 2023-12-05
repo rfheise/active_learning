@@ -1,6 +1,6 @@
 from .WBLog import WBLog 
 from .TextLog import TextLog
-
+from .TerminalLog import TerminalLog
 
 
 class Logger():
@@ -8,8 +8,11 @@ class Logger():
     test_id = None
     test_name = None
     logs = []
-    wandb = False 
+
+    
+    wandb = True
     text = True
+    terminal = True
 
     @staticmethod 
     def initialize_logger(test_name, test_id):
@@ -17,9 +20,11 @@ class Logger():
         Logger.test_name = test_name
 
         if Logger.wandb:
-            Logger.logs.append(WBLog(test_id))
+            Logger.logs.append(WBLog(test_name, test_id))
         if Logger.text:
-            Logger.logs.append(TextLog(test_id))        
+            Logger.logs.append(TextLog(test_name, test_id))     
+        if Logger.terminal:
+            Logger.logs.append(TerminalLog(test_name, test_id))   
         
     
     @staticmethod 
