@@ -10,11 +10,18 @@ from ..Logger import Logger
 class Model():
 
     def __init__(self):
+        """
+            initialize your model
+            click on LeNet.py to view an example
+        """
         self.hyper_params = {}
 
     def fit(self,X,y):
 
-        # train model
+        """trains model with training data 
+        X: training data
+        y: targets
+        """
         pass
 
     def pred(self,X):
@@ -24,22 +31,40 @@ class Model():
     
     def pred_proba(self, X):
 
+        """
+        predicts class probabilities 
+        returns: numpy array of class predictions should be shape (m,c)
+            m - number of training examples 
+            c - number of classes
+        """
         # make probability predictions for X 
         return None
     
     def clear(self):
 
-        # clear params
+        """
+        resets model for another round of training
+        just reset the models params
+        """
         pass
     
     @staticmethod
-    def clone():
-        pass
+    def clone(other):
+        """
+        creates clone of other with same params
+        returns another cloned model
+        """
+        return Model()
 
     def set_hyper_params(self):
         #optional method to update hyper_params dict 
         #used for logging 
-        pass
+
+        """
+        optional method used to update hyper_params dict for logging
+        used to log modified hyper-parameters for each test
+        """
+        self.hyper_params = {}
 
     def log_hyper_parameters(self):
         

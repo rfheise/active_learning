@@ -4,6 +4,17 @@ from torchvision import transforms
 import numpy as np
 import torch 
 
+def get_data():
+
+    """
+    generic dataset func
+    gets dataset for training a model 
+    returns 4 numpy arrays (X_train, y_train, X_test, y_test)
+    click on MNIST.py folder to view example
+    """
+    X_train,y_train, X_test, y_test = (None,None,None,None)
+    return X_train, y_train, X_test, y_test
+
 
 class DataSetFromTensor(Dataset):
 
