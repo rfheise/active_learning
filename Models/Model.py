@@ -76,14 +76,15 @@ class Model():
         self.set_hyper_params()
         Logger.log_hyper_parameters(**self.hyper_params)
     
-    def get_stat_val(self, X, y):
-        
+    def loss(self, y_true, y_pred):
+        """custom loss function
+
+        Args:
+            y_true (_type_): true values
+            y_pred (_type_): predicted probabilities
+        Returns:
+            (int): loss value
         """
-        returns accuracy and loss of dataset 
-        may need to be inherited by child
-        """
-        proba = self.pred_proba(X)
-        loss = self.loss(y, proba, labels=np.arange(10))
-        acc = (proba.argmax(axis=1) == y).mean()
-        return acc, loss
+        return 0
+
 

@@ -54,8 +54,12 @@ def train_query_samp(models, X,y, query_strat, initialize=100, budget=100, step_
             model.clear()
             train_acc, train_loss = model.fit(labeled_data[0], labeled_data[1])
             
-        if val is not None:
-            val_acc, val_loss = model.get_stat_val(val[0], val[1])
+        preds = np.zeros((val[0].shape[0], np.unique(val[1]).shape[0]))
+        for model in models:
+            preds = preds + model.pred_proba(val[0])
+        preds = preds/len(models)
+        val_acc = (preds.argmax(axis=1) == val[1]).mean()
+        val_loss = models[0].loss(val[1], preds)
 
         Logger.log_training_data(
             **{"train/acc":train_acc,

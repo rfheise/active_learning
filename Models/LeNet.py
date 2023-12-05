@@ -18,12 +18,12 @@ class LeNetAL(Model):
     def __init__(self):
         super().__init__()
         self.model = LeNet().to(LeNetAL.device)
-        self.loss = torch.nn.CrossEntropyLoss()
-        # self.loss = BalancedLoss(10,LeNetAL.device)
+        self.model_loss = torch.nn.CrossEntropyLoss()
+        # self.model_loss = BalancedLoss(10,LeNetAL.device)
         self.initial_weights = LeNet()
         self.initial_weights.load_state_dict(self.model.state_dict())
         self.train_batch_size = 100
-        self.num_models = 20
+        self.num_models = 1
     
     def set_optim(self):
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
@@ -61,7 +61,7 @@ class LeNetAL(Model):
                     
                     preds = self.model(X)
                     
-                    loss = self.loss(preds, y)
+                    loss = self.model_loss(preds, y)
                     loss.backward()
                     self.optimizer.step() 
                     rolling_acc += (preds.argmax(dim=1) == y).sum().item()
@@ -101,14 +101,10 @@ class LeNetAL(Model):
       net.initial_weights.load_state_dict(net.model.state_dict())
       net.set_optim()
       return net
-
-    def get_stat_val(self, X, y):
+    
+    def loss(self, y_true, y_pred):
         
-        y = torch.tensor(y)
-        proba = torch.tensor(self.pred_proba(X))
-        loss = self.loss(proba, y).item()
-        acc = (proba.argmax(dim=1) == y).to(torch.float).mean().item()
-        return acc, loss
+        return self.model_loss(torch.tensor(y_pred), torch.tensor(y_true)).item()
             
 
 
