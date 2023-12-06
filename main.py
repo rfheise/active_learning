@@ -10,7 +10,7 @@ def main():
     # uses a budget of 10000
     # uses a step size of 500
     # to run your test change the args of the function below
-    test_all_strats(LeNetAL, get_mnist_data, test_id=8021,num_init=500,budget=60000, k=500)
+    test_all_strats(LeNetAL, get_mnist_data, test_id=8021,num_init=500,budget=15000, k=250)
     # for i in range(4):
     # test_all_strats(LogisticAL, get_mnist_data, test_id=6090, num_init=500,budget=60000, k=500 )
 
