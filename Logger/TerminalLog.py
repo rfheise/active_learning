@@ -11,7 +11,9 @@ class TerminalLog(Log):
         print(test_name, test_id)
 
     def log_hyper_parameters(self, **kwargs):
-        pass 
+        
+        for kwarg in kwargs:
+            print(f"{kwarg}:{kwargs[kwarg]}")
 
     def log_training_data(self,**kwargs):
         

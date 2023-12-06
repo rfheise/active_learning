@@ -1,0 +1,18 @@
+model:XGBoost
+loss:CE
+clear:new model
+model:XGBoost
+loss:CE
+clear:new model
+model:XGBoost
+loss:CE
+clear:new model
+model:XGBoost
+loss:CE
+clear:new model
+model:XGBoost
+loss:CE
+clear:new model
+budget:5051
+k:100
+init_pts:100

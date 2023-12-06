@@ -1,0 +1,18 @@
+model:LogisticRegression
+loss:CE
+clear:new model
+model:LogisticRegression
+loss:CE
+clear:new model
+model:LogisticRegression
+loss:CE
+clear:new model
+model:LogisticRegression
+loss:CE
+clear:new model
+model:LogisticRegression
+loss:CE
+clear:new model
+budget:2500
+k:100
+init_pts:1000

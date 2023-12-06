@@ -9,7 +9,7 @@ def get_mnist_data():
     
     default = transforms.Compose([
         transforms.ToTensor(),
-        # transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5),),
+        transforms.Normalize((0.5,),(0.5,),),
     ])
     # train_data = datasets.CIFAR10(root='./data', train=True, transform=default, download=True)
     # test_data = datasets.CIFAR10(root='./data', train=False, transform=default, download=True)

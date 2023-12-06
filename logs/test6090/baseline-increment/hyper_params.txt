@@ -1,0 +1,6 @@
+model:LogisticRegression
+loss:CE
+clear:new model
+budget:60000
+k:500
+init_pts:500

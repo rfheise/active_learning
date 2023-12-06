@@ -15,7 +15,7 @@ def get_classes_cifar(data):
 
     
 
-def get_data_car_plane():
+def get_cifar_data():
 
     default = transforms.Compose([
         transforms.ToTensor(),
@@ -25,8 +25,8 @@ def get_data_car_plane():
     test_data = datasets.CIFAR10(root='./data', train=False, transform=default, download=True)
     # train_data = datasets.MNIST(root='./data',train=True, download=True,transform=default)
     # test_data = datasets.MNIST(root='./data',train=False,download=True,transform=default)
-    train_data = get_classes_cifar(train_data)
-    test_data = get_classes_cifar(test_data)
+    # train_data = get_classes_cifar(train_data)
+    # test_data = get_classes_cifar(test_data)
 
     train_loader = DataLoader(train_data, batch_size=500000,num_workers=4, shuffle=True)
     test_loader = DataLoader(test_data, batch_size=500000, num_workers=4, shuffle=True)

@@ -1,0 +1,11 @@
+model:LeNet Fast
+epochs:75
+train_batch_size:250
+loss:CE
+scheduler:torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)
+optim:default adam
+clear:new model
+num_fitting:10
+budget:60000
+k:500
+init_pts:500
