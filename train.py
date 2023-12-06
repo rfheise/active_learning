@@ -14,7 +14,13 @@ def generate_test(name, model, query_strat):
         "query_strat":query_strat
     }
 
-def test_all_strats(ModelClass, data_func,test_id=1, num_init=500, budget=10000, k=500):
+def default_init(X,y, num_points):
+
+    labeled_data = [X[:num_points], y[:num_points]]
+
+    return labeled_data, X[num_points:], y[num_points:]
+
+def test_all_strats(ModelClass, data_func,test_id=1, num_init=500, budget=10000, k=500, initializer=default_init):
     initial_weights = ModelClass()
     tests = [
         generate_test("uncert-pool",[ModelClass.clone(initial_weights)],uncertainty_pool),
@@ -28,19 +34,18 @@ def test_all_strats(ModelClass, data_func,test_id=1, num_init=500, budget=10000,
     for test in tests:
         print(f"\n\n Running: {test['name']}\n\n")
         Logger.initialize_logger(test['name'], test_id)
-        train_query_samp(test["model"],X_train, y_train, test["query_strat"],num_init, budget, k, (X_test, y_test))
+        train_query_samp(test["model"],X_train, y_train, test["query_strat"],num_init, budget, k, (X_test, y_test), initializer)
 
 def test_model(models, X,y, val):
     train_query_samp(models, X,y, default_random, initialize=10e8, budget=1, step_size=10, val=val)
 
 
-def train_query_samp(models, X,y, query_strat, initialize=100, budget=100, step_size=10, val=None):
+
+def train_query_samp(models, X,y, query_strat, initialize=100, budget=100, step_size=10, val=None, initializer=default_init):
     
     #initialize starting labels
-    labeled_data = [X[:initialize], y[:initialize]]
-    unlabeled_data = X[initialize:]
-    y = y[initialize:]
-    
+    labeled_data, unlabeled_data, y = initializer(X,y, initialize)
+   
     #log hyper params
     for model in models:
         model.log_hyper_parameters()

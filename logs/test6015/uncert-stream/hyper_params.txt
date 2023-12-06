@@ -4,3 +4,9 @@ clear:new model
 budget:1000
 k:5
 init_pts:5
+model:LogisticRegression
+loss:CE
+clear:new model
+budget:1000
+k:5
+init_pts:5
