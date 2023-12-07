@@ -7,6 +7,7 @@ from torch.utils.data import TensorDataset, DataLoader
 from .Model import Model
 from ..Datasets import DataSetFromTensor
 import time 
+import copy
 
 class LeNetAL(Model):
 
@@ -20,17 +21,20 @@ class LeNetAL(Model):
         self.model = LeNet().to(LeNetAL.device)
         self.model_loss = torch.nn.CrossEntropyLoss()
         # self.model_loss = BalancedLoss(10,LeNetAL.device)
-        self.initial_weights = LeNet()
+        self.initial_weights = LeNet().to(LeNetAL.device)
         self.initial_weights.load_state_dict(self.model.state_dict())
-        self.train_batch_size = 250
-        self.num_models = 10
-        self.epochs = 75
+        self.train_batch_size = 500000
+        self.num_models = 1
+        self.epochs = 200
         self.transform_train = None
+        self.debug = False
     
     def set_optim(self):
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=.001) 
-        self.scheduler = torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)
+        self.scheduler = None
+        # self.scheduler = torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[100,150,300], gamma=0.2)
         # self.scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(self.optimizer, self.epochs - 1)
+        self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 100, gamma=.1)
 
     def to_data_loader(self, train, X,y, batch_size=100):
         
@@ -61,7 +65,7 @@ class LeNetAL(Model):
                 rolling_loss = 0
                 count = 0
                 count_batches = 0
-                # print("epoch:",i,"\n")
+                self.print_debug("epoch:",i,"\n")
                 # for X,y in loader:
                 indexes = torch.randperm(X_orig.shape[0])
                 X_perm = X_orig[indexes]
@@ -87,7 +91,9 @@ class LeNetAL(Model):
                     count_batches += 1
                     
                 acc, loss = rolling_acc/count, rolling_loss/count_batches
-                # print(acc, loss, "\n\n\n")
+                self.print_debug(acc, loss, "\n\n\n")
+                if self.debug:
+                    time.sleep(.1)
                 if self.scheduler is not None:
                     self.scheduler.step()
             models.append((self.model, acc, loss))
@@ -102,7 +108,10 @@ class LeNetAL(Model):
         self.model = models[min_index][0]
         # acc, loss
         return models[min_index][1], models[min_index][2]
-
+    
+    def print_debug(self,*args, **kwargs):
+        if self.debug:
+            print(*args, **kwargs)
     def pred_proba(self,X):
 
         self.model.eval()
@@ -131,14 +140,15 @@ class LeNetAL(Model):
 
 
     def clear(self):
+        # self.model = copy.deepcopy(self.initial_weights)
         # self.model.load_state_dict(self.initial_weights.state_dict())
-        self.model = LeNet().to(LeNetAL.device)
+        # self.model = LeNet().to(LeNetAL.device)
         self.set_optim()
 
     def set_hyper_params(self):
 
         self.hyper_params = {
-            "model": "LeNet Fast",
+            "model": "LeNet Fast BRRRR",
             "epochs":self.epochs, 
             "train_batch_size":self.train_batch_size, 
             "loss":"CE",

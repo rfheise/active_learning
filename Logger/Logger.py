@@ -10,7 +10,7 @@ class Logger():
     logs = []
 
     # runs wandb logging
-    wandb = False
+    wandb = True
     # runs text based logging into csv 
     # puts in logs folder
     text = True

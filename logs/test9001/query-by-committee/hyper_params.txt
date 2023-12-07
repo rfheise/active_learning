@@ -1,0 +1,43 @@
+model:LeNet Fast BRRRR
+epochs:200
+train_batch_size:500000
+loss:CE
+scheduler:torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)
+optim:default adam
+clear:new model
+num_fitting:1
+model:LeNet Fast BRRRR
+epochs:200
+train_batch_size:500000
+loss:CE
+scheduler:torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)
+optim:default adam
+clear:new model
+num_fitting:1
+model:LeNet Fast BRRRR
+epochs:200
+train_batch_size:500000
+loss:CE
+scheduler:torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)
+optim:default adam
+clear:new model
+num_fitting:1
+model:LeNet Fast BRRRR
+epochs:200
+train_batch_size:500000
+loss:CE
+scheduler:torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)
+optim:default adam
+clear:new model
+num_fitting:1
+model:LeNet Fast BRRRR
+epochs:200
+train_batch_size:500000
+loss:CE
+scheduler:torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[30,60,120], gamma=0.1)
+optim:default adam
+clear:new model
+num_fitting:1
+budget:8050
+k:250
+init_pts:500
