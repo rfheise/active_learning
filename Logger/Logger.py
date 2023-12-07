@@ -13,7 +13,7 @@ class Logger():
     wandb = False
     # runs text based logging into csv 
     # puts in logs folder
-    text = True
+    text = False
     # prints logs to terminal
     terminal = True
 
