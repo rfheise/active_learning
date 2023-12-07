@@ -15,10 +15,10 @@ def main():
         "loss":loss_metric,
         "f1":f1_metric
     }
-    # test_all_strats(LeNetAL, get_mnist_data, test_id=9001,num_init=500,budget=8050, k=250)
+    test_all_strats(LeNetAL, get_mnist_data, metrics=metrics,test_id=9003,num_init=500,budget=8050, k=250)
     # for i in range(4):
     
-    test_all_strats(LogisticAL, get_titanic_data, metrics=metrics, test_id=6018, num_init=10,budget=5000, k=5 )
+    #test_all_strats(LogisticAL, get_titanic_data, metrics=metrics, test_id=6018, num_init=10,budget=5000, k=5 )
 
 if __name__ == "__main__":
     main()

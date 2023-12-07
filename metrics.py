@@ -10,7 +10,7 @@ def accuracy_metric(model, y_true, y_proba):
 def f1_metric(model, y_true, y_proba):
     
     y_preds = y_proba.argmax(axis=1)
-    return f1_score(y_true,y_preds)
+    return f1_score(y_true,y_preds, average='micro')
 
 def loss_metric(model, y_true, y_proba):
 

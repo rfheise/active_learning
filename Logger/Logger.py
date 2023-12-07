@@ -10,10 +10,10 @@ class Logger():
     logs = []
 
     # runs wandb logging
-    wandb = False
+    wandb = True
     # runs text based logging into csv 
     # puts in logs folder
-    text = False
+    text = True
     # prints logs to terminal
     terminal = True
 
