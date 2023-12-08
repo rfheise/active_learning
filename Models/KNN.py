@@ -12,11 +12,15 @@ from .Model import Model
 class KNN_AL(Model):
     def __init__(self):
         super().__init__()
-        self.k = 10
+        self.k = 1
         self.model = KNeighborsClassifier(n_neighbors=self.k)
-        self.loss = log_loss
-        self.total_classes = 300
+        
+        self.total_classes = 10
         self.classes_searched = []
+
+    def loss(self, y_true,y_preds ):
+        return log_loss(y_true, y_preds, labels=np.arange(self.total_classes))
+    
     def fit(self,X,y):
 
         """trains model with training data 
@@ -27,8 +31,8 @@ class KNN_AL(Model):
         """
         self.model.fit(X,y)
         preds = self.model.predict_proba(X)
-        acc = (preds.argmax(axis=1) == y).astype(np.float64).sum()/y.shape[0]
-        loss = self.loss(y, preds)
+        # acc = (preds.argmax(axis=1) == y).astype(np.float64).sum()/y.shape[0]
+        # loss = self.loss(y, preds)
         for y_i in y:
             y_i = int(y_i)
             if len(self.classes_searched) == 0:
@@ -37,7 +41,7 @@ class KNN_AL(Model):
                 self.classes_searched.append(y_i)
         #print(self.classes_searched)
         self.classes_searched.sort()
-        return acc, loss
+        return 0,0
     
     def pred_proba(self, X):
         pred_prob = self.model.predict_proba(X)
@@ -48,7 +52,7 @@ class KNN_AL(Model):
             for j in range(len(pred_prob)):
                 new_pred_proba[j,idx] = pred_prob[j,i]
         #print(new_pred_proba[0])
-
+        # print(new_pred_proba.shape)
         """
         predicts class probabilities 
         returns: numpy array of class predictions should be shape (m,c)
