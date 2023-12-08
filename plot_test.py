@@ -23,21 +23,21 @@ def plot(test_name):
             samples = []
 
             with open(file_path, 'r', newline='') as f:
-                reader = csv.reader(f, delimiter=',')
+                reader = csv.DictReader(f, delimiter=',')
                 line_idx = 0
                 for row in reader:
-                    if line_idx == 0:
-                        pass
-                    else:
+                    # if line_idx == 0:
+                    #     pass
+                    # else:
                         #print(line_idx)
-                        try:
-                            train_acc.append(float(row[0]))
-                            train_loss.append(round(float(row[1]), 2))
-                            val_loss.append(round(float(row[2]), 2))
-                            val_acc.append(round(float(row[3]), 2))
-                            samples.append(int(row[4]))
-                        except:
-                            pass
+                        # try:
+                    train_acc.append(float(row["train/acc"]))
+                    train_loss.append(round(float(row["train/loss"]), 2))
+                    val_loss.append(round(float(row["val/loss"]), 2))
+                    val_acc.append(round(float(row["val/acc"]), 2))
+                    samples.append(int(row["labeled_data_points"]))
+                        # except:
+                        #     pass
                     line_idx += 1
 
                 plt.subplot(2,2,1)

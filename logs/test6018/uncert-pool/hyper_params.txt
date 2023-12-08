@@ -4,3 +4,9 @@ clear:new model
 budget:5000
 k:5
 init_pts:10
+model:KNN
+loss:CE
+clear:new model
+budget:1000
+k:5
+init_pts:10

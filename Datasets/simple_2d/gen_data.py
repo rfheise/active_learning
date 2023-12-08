@@ -9,9 +9,9 @@ mu_0 = 20
 mu = [mu_0]
 class_num = 10
 for i in range(class_num-1):
-    mu.append(mu[i] + 325)
+    mu.append(mu[i] + 1000)
 sigma = 35
-init_y = 100
+init_y = 10
 class_num = 0
 idx = 0
 
@@ -20,7 +20,7 @@ y = []
 data = []
 for mu_i in mu:
     sample_size = np.random.choice(sample_sizes,replace=True, p=size_prob)
-    dist = np.random.normal(loc=[mu_i, init_y], scale=[2*sigma,0.5*sigma], size=[sample_size, 2])
+    dist = np.random.normal(loc=[mu_i, init_y], scale=[.5*sigma,0.5*sigma], size=[sample_size, 2])
     for x_i, y_i in dist:
         x_i = round(x_i, 3)
         y_i = round(y_i, 3)
@@ -31,13 +31,13 @@ for mu_i in mu:
     class_num += 1
 
 data = np.array(data)
-np.take(data,np.random.permutation(data.shape[0]),axis=0,out=data)
-
-"""with open('knn_data.csv', 'w', newline='') as f:
+print(data[:,2])
+# np.take(data,np.random.permutation(data.shape[0]),axis=0,out=data)
+with open('knn_data2.csv', 'w', newline='') as f:
     #['x', 'y','label']
     writer = csv.writer(f, delimiter=',')
     for row in data:
-        writer.writerow(row) #['x', 'y','label']"""
+        writer.writerow(row) #['x', 'y','label']
 
 fig, ax = plt.subplots()
 ax.scatter(x, y)

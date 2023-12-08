@@ -1,7 +1,15 @@
-from .Models import LeNetAL, XGBoost, LogisticAL,ResNet18AL
-from .Datasets import get_mnist_data,get_titanic_data, get_mnist_flat_data,get_cifar_data
+from .Models import LeNetAL, XGBoost, LogisticAL,ResNet18AL, KNN_AL
+from .Datasets import get_mnist_data,get_titanic_data, get_mnist_flat_data,get_cifar_data, get_knn_data 
 from .train import test_all_strats
 from .metrics import accuracy_metric, loss_metric, f1_metric
+import numpy as np
+
+def initializer(X,y, num_points):
+
+        labeled_data = [X[:num_points], y[:num_points]]
+        random_perm = np.arange(X.shape[0] - num_points) + num_points
+        return labeled_data, X[random_perm], y[random_perm]
+
 def main():
     
     # runs all querying strategies on mnist dataset with LeNet 
@@ -15,10 +23,11 @@ def main():
         "loss":loss_metric,
         "f1":f1_metric
     }
-    test_all_strats(LeNetAL, get_mnist_data, metrics=metrics,test_id=9003,num_init=500,budget=8050, k=250)
-    # for i in range(4):
     
-    #test_all_strats(LogisticAL, get_titanic_data, metrics=metrics, test_id=6018, num_init=10,budget=5000, k=5 )
+    # test_all_strats(LeNetAL, get_mnist_data, metrics=metrics,test_id=9004,num_init=500,budget=8050, k=250)
+    # for i in range(4):
+    # test_all_strats(LogisticAL, get_titanic_data, metrics=metrics, test_id=11001,num_init=10, k=5,budget=1000)
+    test_all_strats(KNN_AL, get_knn_data,initializer=initializer, metrics=metrics, test_id=11003, num_init=10,budget=1000, k=5 )
 
 if __name__ == "__main__":
     main()
