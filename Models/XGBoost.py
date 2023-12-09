@@ -19,7 +19,7 @@ class XGBoost(Model):
         super().__init__()
         self.model = XGBClassifier()
         self.loss = log_loss
-    def fit(self,X,y):
+    def fit(self,X,y,**kwargs):
 
         """trains model with training data 
         X: training data

@@ -8,6 +8,7 @@ from .Model import Model
 from ..Datasets import DataSetFromTensor
 import time 
 import copy
+from ..metrics import loss_metric 
 
 class LeNetAL(Model):
 
@@ -47,7 +48,7 @@ class LeNetAL(Model):
         else:
             return DataLoader(DataSetFromTensor(X,y, LeNetAL.default_transform), batch_size=batch_size, num_workers=4,shuffle=train)
 
-    def fit(self,X,y):
+    def fit(self,X,y, **kwargs):
 
         models = []
         # loader = self.to_data_loader(True, X,y, self.train_batch_size)
@@ -101,10 +102,17 @@ class LeNetAL(Model):
         e = time.time()
         # print(e - s)
         min_index = 0
+        l = None
+        val = kwargs["val"]
         for j in range(self.num_models):
-            # print(models[j][1], models[j][2])
-            if models[min_index][2] > models[j][2]:
+            self.model = models[j][0]
+            n_l = loss_metric(self, val[1], self.pred_proba(val[0]))
+            if l is None:
+                l = n_l
+            # print(models[j][1], models[j][2],n_l)
+            if l > n_l:
                 min_index = j
+                l = n_l
         self.model = models[min_index][0]
         # acc, loss
         return models[min_index][1], models[min_index][2]

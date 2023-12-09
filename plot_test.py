@@ -10,7 +10,7 @@ log_path = os.path.join(dir_path, 'logs')
 
 def plot(test_name):
     test_path = os.path.join(log_path, test_name)
-    folder_names = ['baseline-increment','baseline-random','query-by-committee','uncert-pool','uncert-stream']
+    folder_names = ['baseline-random','query-by-committee','uncert-pool','uncert-stream']
     for name in folder_names:
         folder_path = os.path.join(test_path, name)
         if(os.path.exists(folder_path)):
@@ -21,7 +21,8 @@ def plot(test_name):
             val_acc = []
             val_loss = []
             samples = []
-
+            window = [5500, 8050]
+            # window = None
             with open(file_path, 'r', newline='') as f:
                 reader = csv.DictReader(f, delimiter=',')
                 line_idx = 0
@@ -31,11 +32,13 @@ def plot(test_name):
                     # else:
                         #print(line_idx)
                         # try:
-                    train_acc.append(float(row["train/acc"]))
-                    train_loss.append(round(float(row["train/loss"]), 2))
-                    val_loss.append(round(float(row["val/loss"]), 2))
-                    val_acc.append(round(float(row["val/acc"]), 2))
-                    samples.append(int(row["labeled_data_points"]))
+                    labeled = int(row["labeled_data_points"])
+                    if window is None or (labeled >= window[0] and labeled <= window[1]):
+                        train_acc.append(float(row["train/acc"]))
+                        train_loss.append(round(float(row["train/loss"]), 2))
+                        val_loss.append(round(float(row["val/loss"]), 2))
+                        val_acc.append(round(float(row["val/acc"]), 2))
+                        samples.append(int(row["labeled_data_points"]))
                         # except:
                         #     pass
                     line_idx += 1

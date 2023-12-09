@@ -61,7 +61,7 @@ def train_query_samp(models, X,y, query_strat,metrics=default_metrics, initializ
 
         for model in models:
             model.clear()
-            train_acc, train_loss = model.fit(labeled_data[0], labeled_data[1])
+            train_acc, train_loss = model.fit(labeled_data[0], labeled_data[1], val=val)
 
         preds = np.zeros((val[0].shape[0], np.unique(val[1]).shape[0]))
         for model in models:

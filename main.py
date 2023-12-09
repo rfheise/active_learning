@@ -24,10 +24,10 @@ def main():
         "f1":f1_metric
     }
     
-    # test_all_strats(LeNetAL, get_mnist_data, metrics=metrics,test_id=9004,num_init=500,budget=8050, k=250)
+    # test_all_strats(LeNetAL, get_mnist_data, metrics=metrics,test_id=6045,num_init=500,budget=8050, k=250)
     # for i in range(4):
-    # test_all_strats(LogisticAL, get_titanic_data, metrics=metrics, test_id=11001,num_init=10, k=5,budget=1000)
-    test_all_strats(KNN_AL, get_knn_data,initializer=initializer, metrics=metrics, test_id=11003, num_init=10,budget=1000, k=5 )
+    test_all_strats(LogisticAL, get_titanic_data, metrics=metrics, test_id=6047,num_init=10, k=5,budget=1000)
+    # test_all_strats(KNN_AL, get_knn_data,initializer=initializer, metrics=metrics, test_id=11003, num_init=10,budget=1000, k=5 )
 
 if __name__ == "__main__":
     main()

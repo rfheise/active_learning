@@ -19,7 +19,7 @@ class LogisticAL(Model):
         super().__init__()
         self.model = LogisticRegression(max_iter=int(10e6))
         self.loss = log_loss
-    def fit(self,X,y):
+    def fit(self,X,y, **kwargs):
 
         """trains model with training data 
         X: training data

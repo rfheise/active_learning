@@ -21,7 +21,7 @@ class KNN_AL(Model):
     def loss(self, y_true,y_preds ):
         return log_loss(y_true, y_preds, labels=np.arange(self.total_classes))
     
-    def fit(self,X,y):
+    def fit(self,X,y, **kwargs):
 
         """trains model with training data 
         X: training data

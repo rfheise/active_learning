@@ -16,7 +16,7 @@ class Model():
         """
         self.hyper_params = {}
 
-    def fit(self,X,y):
+    def fit(self,X,y, **kwargs):
 
         """trains model with training data 
         X: training data
