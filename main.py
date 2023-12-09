@@ -2,6 +2,7 @@ from .Models import LeNetAL, XGBoost, LogisticAL,ResNet18AL, KNN_AL
 from .Datasets import get_mnist_data,get_titanic_data, get_mnist_flat_data,get_cifar_data, get_knn_data 
 from .train import test_all_strats
 from .metrics import accuracy_metric, loss_metric, f1_metric
+from .plot_test import plot
 import numpy as np
 
 def initializer(X,y, num_points):

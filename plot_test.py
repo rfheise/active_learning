@@ -7,7 +7,6 @@ import sys
 dir_path = os.path.dirname(os.path.realpath(__file__))
 log_path = os.path.join(dir_path, 'logs')
 
-
 def plot(test_name):
     test_path = os.path.join(log_path, test_name)
     folder_names = ['baseline-random','query-by-committee','uncert-pool','uncert-stream']
@@ -25,7 +24,6 @@ def plot(test_name):
             # window = None
             with open(file_path, 'r', newline='') as f:
                 reader = csv.DictReader(f, delimiter=',')
-                line_idx = 0
                 for row in reader:
                     # if line_idx == 0:
                     #     pass
@@ -53,13 +51,12 @@ def plot(test_name):
                 plt.legend()
                 plt.subplot(2,2,3)
                 plt.plot(samples, train_loss,label=name)
-                #plt.title('Training Loss')
                 plt.xlabel('Sample Size')
                 plt.ylabel('Loss')
                 plt.subplot(2,2,4)
                 plt.plot(samples, val_loss, label=name)
-                #plt.title('Validation Loss')
                 plt.xlabel('Sample Size')
+            folder_idx += 1
     plt.show()
 
 def main():

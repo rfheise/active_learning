@@ -8,6 +8,7 @@ from ..Logger import Logger
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import log_loss
 from .Model import Model
+import copy
 
 class KNN_AL(Model):
     def __init__(self):
@@ -18,7 +19,7 @@ class KNN_AL(Model):
         self.total_classes = 10
         self.classes_searched = []
 
-    def loss(self, y_true,y_preds ):
+    def loss(self, y_true,y_preds):
         return log_loss(y_true, y_preds, labels=np.arange(self.total_classes))
     
     def fit(self,X,y, **kwargs):
@@ -44,15 +45,6 @@ class KNN_AL(Model):
         return 0,0
     
     def pred_proba(self, X):
-        pred_prob = self.model.predict_proba(X)
-        #print(self.classes_searched)
-        new_pred_proba = np.zeros(shape=[len(X), self.total_classes])
-        for i in range(len(self.classes_searched)):
-            idx = self.classes_searched[i]
-            for j in range(len(pred_prob)):
-                new_pred_proba[j,idx] = pred_prob[j,i]
-        #print(new_pred_proba[0])
-        # print(new_pred_proba.shape)
         """
         predicts class probabilities 
         returns: numpy array of class predictions should be shape (m,c)
@@ -60,6 +52,12 @@ class KNN_AL(Model):
             c - number of classes
         """
         # make probability predictions for X 
+        pred_prob = self.model.predict_proba(X)
+        new_pred_proba = np.zeros(shape=[len(X), self.total_classes])
+        for i in range(len(self.classes_searched)):
+            idx = self.classes_searched[i]
+            for j in range(len(pred_prob)):
+                new_pred_proba[j,idx] = pred_prob[j,i]
         return new_pred_proba
     
     def clear(self):
@@ -79,11 +77,20 @@ class KNN_AL(Model):
 
         return KNN_AL()
     
-    def initializer(X, y):
-        y_u = np.unique(y, return_index=True)
-        for y_i in y_u:
-            pass
-        return None
+    def initializer(X, y, num_of_points):
+        bias_y = np.where(y<3.0)
+        bias_y = np.flip(bias_y)
+        init_X = []
+        init_y = []
+        unlbld_X = copy.deepcopy(X)
+        unlbld_y = copy.deepcopy(y)
+        for i in range(num_of_points):
+            init_X.append(X[bias_y[0,i]])
+            init_y.append(y[bias_y[0,i]])
+            np.delete(unlbld_X, bias_y[0,i])
+            np.delete(unlbld_y, bias_y[0,i])
+        labeled_data = [np.array(init_X), np.array(init_y)]
+        return labeled_data, unlbld_X, unlbld_y
 
     def set_hyper_params(self):
         #optional method to update hyper_params dict 
