@@ -19,6 +19,10 @@
     * python dependencies
   * main.py
     * main file where you run your tests
+  * plot_test.py
+    * plots data from the csv files generated from the text based logger
+  * metrics.py
+    * file that allows you to produce custom data metrics to be logged by the logger
   * playground_ryan.py
     * file where I was just messing with things feel free to make your own 
   * query_strat.py 
@@ -37,16 +41,31 @@
     * Logger.py 
       * calls all set loggers when training 
   * Datasets
+    * simple_2d
+      * gen_data.py
+        * generates data for knn test
+    * titanic
+      * contains pre-processed files of titanic dataset data
     * Data.py 
       * helper functions and generic data function example
     * Cifar.py
       * cifar dataset 
     * MNIST.py 
-      * MNIST dataset 
+      * MNIST dataset
+    * KNN.py
+      * KNN dataset
+    * Titanic.py
+      * Titanic dataset
   * Models
     * LeNet.py
-      * LeNet model implementation
+      * CNN model implementation using pytorch
+    * LogisticRegression.py
+      * Logisitc Regression model implemenation with sklearn
+    * XGBoost.py
+      * XGBoost model implementation using xgboost python library
+    * KNN.py
+    *   KNN model implementation using sklearn
     * ResNet.py
-      * ResNet model implementation
+      * ResNet model implementation using pytorch
     * Model.py
       * generic Model class used to implement a model
