@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 
-#sample_size = 2000
 sample_sizes = [50, 200, 75, 15]
 size_prob = [0.38, 0.4, 0.12, 0.1]
 mu_0 = 20
@@ -31,14 +30,17 @@ for mu_i in mu:
     class_num += 1
 
 data = np.array(data)
-print(data[:,2])
+# print(data[:,2])
+# Randomize data
 # np.take(data,np.random.permutation(data.shape[0]),axis=0,out=data)
-with open('knn_data2.csv', 'w', newline='') as f:
-    #['x', 'y','label']
+
+# Save data to csv file
+with open('knn_data12.csv', 'w', newline='') as f:
     writer = csv.writer(f, delimiter=',')
     for row in data:
         writer.writerow(row) #['x', 'y','label']
 
+# Show distribution of data 
 fig, ax = plt.subplots()
 ax.scatter(x, y)
 plt.show()
